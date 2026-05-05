@@ -45,5 +45,6 @@ cp "$ENV_EXAMPLE" "$ENV_FILE"
 # Fill in the empty values that the example leaves blank.
 sed -i "s|^NEXTAUTH_SECRET=.*|NEXTAUTH_SECRET='${NEXTAUTH_SECRET}'|" "$ENV_FILE"
 sed -i "s|^CALENDSO_ENCRYPTION_KEY=.*|CALENDSO_ENCRYPTION_KEY='${CALENDSO_ENCRYPTION_KEY}'|" "$ENV_FILE"
+sed -i "s|^IS_ALLOY=.*|IS_ALLOY='${IS_ALLOY}'|" "$ENV_FILE"
 
 echo ">>> Wrote $ENV_FILE"
