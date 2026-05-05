@@ -34,7 +34,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      IS_ALLOY:${IS_ALLOY}
+      IS_ALLOY: ${IS_ALLOY}
       NEXTAUTH_SECRET: local-dev-nextauth-secret-32-chars
       CALENDSO_ENCRYPTION_KEY: local-dev-encryption-key-24chars
       NODE_ENV: development
