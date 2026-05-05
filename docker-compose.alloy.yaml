@@ -56,6 +56,8 @@ services:
         set -e
         corepack enable
         corepack prepare yarn@4.12.0 --activate
+        echo ">>> Populating .env via .alloy/populate-env.sh"
+        bash .alloy/populate-env.sh
         if [ ! -d node_modules/.bin ] || [ ! -f node_modules/.yarn-state.yml ]; then
           echo ">>> Running yarn install (first run can take several minutes)"
           yarn install --inline-builds
