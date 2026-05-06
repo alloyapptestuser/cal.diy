@@ -385,25 +385,34 @@ const nextConfig = (phase: string): NextConfig => {
         value: "*",
       };
 
+      // When running inside the Alloy preview iframe we must not send
+      // X-Frame-Options: DENY, otherwise the proxy at localhost:8080 cannot
+      // render /auth/* or /signup pages.
+      const isAlloy = process.env.IS_ALLOY === "true";
+
       return [
-        {
-          source: "/auth/:path*",
-          headers: [
-            {
-              key: "X-Frame-Options",
-              value: "DENY",
+        isAlloy
+          ? null
+          : {
+              source: "/auth/:path*",
+              headers: [
+                {
+                  key: "X-Frame-Options",
+                  value: "DENY",
+                },
+              ],
             },
-          ],
-        },
-        {
-          source: "/signup",
-          headers: [
-            {
-              key: "X-Frame-Options",
-              value: "DENY",
+        isAlloy
+          ? null
+          : {
+              source: "/signup",
+              headers: [
+                {
+                  key: "X-Frame-Options",
+                  value: "DENY",
+                },
+              ],
             },
-          ],
-        },
         {
           source: "/:path*",
           headers: [
