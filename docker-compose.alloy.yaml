@@ -69,6 +69,10 @@ services:
         yarn workspace @calcom/prisma prisma generate
         echo ">>> Applying database migrations"
         yarn workspace @calcom/prisma prisma migrate deploy
+        if [ "${IS_ALLOY}" = "true" ]; then
+          echo ">>> Seeding Alloy demo user"
+          yarn workspace @calcom/prisma exec ts-node --transpile-only ../../.alloy/seed-alloy-user.ts
+        fi
         echo ">>> Starting Cal.diy web app on http://localhost:3000"
         exec yarn workspace @calcom/web dev
 
