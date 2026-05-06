@@ -84,6 +84,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
+
+  // Alloy preview: skip the login form entirely and mint a session for the
+  // seeded demo user so visitors land on the dashboard.
+  if (process.env.IS_ALLOY === "true") {
+    const callbackUrl = typeof query.callbackUrl === "string" ? query.callbackUrl : null;
+    const destination = callbackUrl
+      ? `/api/auth/alloy-auto-login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+      : "/api/auth/alloy-auto-login";
+    return {
+      redirect: {
+        destination,
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       csrfToken: await getCsrfToken(context),
