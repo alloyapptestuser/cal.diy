@@ -34,9 +34,17 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      IS_ALLOY: ${IS_ALLOY}
       NEXTAUTH_SECRET: local-dev-nextauth-secret-32-chars
       CALENDSO_ENCRYPTION_KEY: local-dev-encryption-key-24chars
+      # Point Prisma at the host-networked Postgres on port 5450.
+      DATABASE_URL: postgresql://postgres:@localhost:5450/calendso
+      DATABASE_DIRECT_URL: postgresql://postgres:@localhost:5450/calendso
+      # Cal.diy requires these URL env vars at boot (next.config.ts).
+      NEXT_PUBLIC_WEBAPP_URL: http://localhost:3000
+      NEXTAUTH_URL: http://localhost:3000/api/auth
+      # Forward IS_ALLOY from the sandbox host so the app can relax framing
+      # headers when running inside the Alloy preview proxy.
+      IS_ALLOY: ${IS_ALLOY:-}
       NODE_ENV: development
       NODE_OPTIONS: --max-old-space-size=8192
       # Force the dev server onto port 3000 for the Alloy preview proxy.
@@ -57,8 +65,6 @@ services:
         set -e
         corepack enable
         corepack prepare yarn@4.12.0 --activate
-        echo ">>> Populating .env via .alloy/populate-env.sh"
-        bash .alloy/populate-env.sh
         if [ ! -d node_modules/.bin ] || [ ! -f node_modules/.yarn-state.yml ]; then
           echo ">>> Running yarn install (first run can take several minutes)"
           yarn install --inline-builds
@@ -69,10 +75,6 @@ services:
         yarn workspace @calcom/prisma prisma generate
         echo ">>> Applying database migrations"
         yarn workspace @calcom/prisma prisma migrate deploy
-        if [ "${IS_ALLOY}" = "true" ]; then
-          echo ">>> Seeding Alloy demo user"
-          yarn workspace @calcom/prisma exec ts-node --transpile-only ../../.alloy/seed-alloy-user.ts
-        fi
         echo ">>> Starting Cal.diy web app on http://localhost:3000"
         exec yarn workspace @calcom/web dev
 
