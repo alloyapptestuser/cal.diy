@@ -54,6 +54,11 @@ const getNavigationItems = (): NavigationItemType[] => [
           (path?.startsWith("/apps/installed/") ?? false) ||
           (path?.startsWith("/v2/apps/installed/") ?? false),
       },
+      {
+        name: "app_insights",
+        href: "/apps/insights",
+        isCurrent: ({ pathname: path }) => path?.startsWith("/apps/insights") ?? false,
+      },
     ],
   },
   {
