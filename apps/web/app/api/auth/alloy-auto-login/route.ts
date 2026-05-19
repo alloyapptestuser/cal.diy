@@ -58,11 +58,16 @@ async function handler(req: NextRequest) {
   const { sessionToken } = defaultCookies(useSecureCookies);
 
   // Redirect target — honor ?callbackUrl when supplied, otherwise go home.
+  // Emit a relative Location so the browser stays on whichever host it's
+  // reaching us through (e.g. the Alloy preview proxy at localhost:8080),
+  // rather than getting pinned to the dev server's bound origin.
   const callbackUrl = req.nextUrl.searchParams.get("callbackUrl");
   const target = callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
-  const redirectUrl = new URL(target, req.nextUrl.origin);
 
-  const response = NextResponse.redirect(redirectUrl, { status: 302 });
+  const response = new NextResponse(null, {
+    status: 302,
+    headers: { Location: target },
+  });
   response.cookies.set(sessionToken.name, encoded, {
     ...sessionToken.options,
     maxAge: THIRTY_DAYS_SECONDS,
