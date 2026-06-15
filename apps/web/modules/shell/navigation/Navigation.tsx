@@ -25,6 +25,11 @@ const getNavigationItems = (): NavigationItemType[] => [
     isCurrent: ({ pathname }) => pathname?.startsWith("/bookings") ?? false,
   },
   {
+    name: "insights",
+    href: "/insights",
+    icon: "chart-bar",
+  },
+  {
     name: "availability",
     href: "/availability",
     icon: "clock",
